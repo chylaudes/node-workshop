@@ -1,6 +1,6 @@
 // Module dependencies
-var express = require('express'), 
-    http = require('http'), 
+var express = require('express'),
+    http = require('http'),
     path = require('path');
 
 // Create an express app
@@ -30,21 +30,30 @@ var sessionInfo = {
 };
 
 // Create session middleware
-var session = function(request, response, next) {
-    // TODO: How do we store session data on the request?  How do we continue with the request chain?
+var session = function(req, res, next) {
+    var user = {
+      name: sessionInfo.name,
+    };
+    req.user = user;
+    next();
+    // TO DO: How do we store session data on the request?  How do we continue with the request chain?
 };
 
 // Handle GET request to root URL
-app.get('/', session, function(request, response) {
-    // TODO: How do we render the "index.ejs" template from the /views directory?
+app.get('/', session, function(req, res) {
+  res.render('index', {
+     name: req.user.name,
+     test: "Render this pleaseee"
+ });
+    // TO DO: How do we render the "index.ejs" template from the /views directory?
 });
 
-app.post('/login', function(request, response) {
+app.post('/login', function(req, res) {
     // Update our session state with the undername submitted by the form
-    sessionInfo.name = request.body.username;
+    sessionInfo.name = req.body.username;
 
-    // TODO: How do we send the user back to "/" after the request?
-    response.CHANGEME('/');
+    // TOD O: How do we send the user back to "/" after the request?
+    res.redirect('/');
 });
 
 http.createServer(app).listen(app.get('port'), function(){
