@@ -1,6 +1,7 @@
-var express = require('express'), 
-    http = require('http'), 
+var express = require('express'),
+    http = require('http'),
     path = require('path'),
+    mongoose = require('mongoose'),
     Post = require('./Post');
 
 var app = express();
@@ -21,11 +22,13 @@ app.configure('development', function() {
     app.use(express.errorHandler());
 });
 
+mongoose.createConnection('mongodb://localhost/challenge4-demo');
+
 // Render our home page with all blog posts
 app.get('/', function(request, response) {
 
-    // TODO: How do we get a list of all model objects using a mongoose model?
-    Post.CHANGEME(function(err, posts) {
+    // T ODO: How do we get a list of all model objects using a mongoose model?
+    Post.find(function(err, posts) {
         if (err) {
             response.send(500, 'There was an error - tough luck.');
         }
@@ -44,11 +47,14 @@ app.get('/new', function(request, response) {
 
 // create a new blog post object
 app.post('/create', function(request, response) {
-    // TODO: Create and save a Post model
-    var post = CHANGEME();
+  console.log(request);
+  console.log(request.body);
 
-    // TODO: Save the model
-    post.CHANGEME(function(err, model) {
+    // TO DO: Create and save a Post model
+    var post = new Post(request.body);
+
+    // TO DO: Save the model
+    post.save(function(err, model) {
         if (err) {
             response.send(500, 'There was an error - tough luck.');
         }
